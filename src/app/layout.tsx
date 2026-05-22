@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ToastProvider } from "@/providers/toast-provider";
+import { SessionProvider } from "@/providers/session-provider";
+import { QueryProvider } from "@/providers/query-provider";
 
 export const metadata: Metadata = {
     title: "Tech Cinema Booking",
@@ -13,7 +16,14 @@ export default function RootLayout({
 }) {
     return (
         <html lang="vi">
-            <body>{children}</body>
+            <body>
+                <SessionProvider>
+                    <QueryProvider>
+                        {children}
+                        <ToastProvider />    
+                    </QueryProvider>
+                </SessionProvider>
+            </body>
         </html>
     );
 }

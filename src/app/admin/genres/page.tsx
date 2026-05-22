@@ -1,9 +1,19 @@
-import React from 'react'
+import { GenreCreateForm } from "@/features/genres/components/genre-create-form";
+import { GenreTable } from "@/features/genres/components/genre-table";
 
-const AdminGenresPage = () => {
+export default function AdminGenresPage() {
   return (
-    <div>AdminGenresPage</div>
-  )
-}
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-zinc-950">Genres</h1>
+        <p className="mt-2 text-sm text-zinc-500">
+          Quản lý thể loại phim trong hệ thống.
+        </p>
+      </div>
 
-export default AdminGenresPage
+      <GenreCreateForm />
+
+      <GenreTable />
+    </div>
+  );
+}

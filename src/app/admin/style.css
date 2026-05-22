@@ -1,0 +1,9 @@
+.scroll-hiddenNav {
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.scroll-hiddenNav::-webkit-scrollbar {
+  display: none;
+}
