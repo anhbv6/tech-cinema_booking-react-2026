@@ -18,6 +18,7 @@ async function checkAdminPermission() {
   return adminRoles.includes(session.user.role);
 }
 
+
 export async function GET() {
   const isAllowed = await checkAdminPermission();
 
@@ -38,6 +39,7 @@ export async function GET() {
     data: genres,
   });
 }
+
 
 export async function POST(request: NextRequest) {
   const isAllowed = await checkAdminPermission();
@@ -75,7 +77,7 @@ export async function POST(request: NextRequest) {
 
   if (existingGenre) {
     return NextResponse.json(
-      { message: "Thể loại này đã tồn tại" },
+      { message: "This genre already exists." },
       { status: 409 }
     );
   }
@@ -90,9 +92,10 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json(
     {
-      message: "Tạo thể loại thành công",
+      message: "Create successful genres.",
       data: genre,
     },
     { status: 201 }
   );
 }
+

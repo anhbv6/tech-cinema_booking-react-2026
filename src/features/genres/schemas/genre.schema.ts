@@ -3,12 +3,12 @@ import { z } from "zod";
 export const createGenreSchema = z.object({
     name: z
         .string()
-        .min(1, "Tên thể loại là bắt buộc")
-        .max(100, "Tên thể loại không được quá 100 ký tự"),
+        .min(1, "Category name is required.")
+        .max(100, "Category names must not exceed 100 characters."),
 
     description: z
         .string()
-        .max(500, "Mô tả không được quá 500 ký tự")
+        .max(500, "The description should not exceed 500 characters.")
         .optional()
         .or(z.literal("")),
 });

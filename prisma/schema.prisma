@@ -13,6 +13,18 @@ enum Role {
   CUSTOMER
 }
 
+enum MovieStatus {
+  DRAFT
+  NOW_SHOWING
+  COMING_SOON
+  ENDED
+}
+
+enum MovieSource {
+  MANUAL
+  TMDB
+}
+
 model User {
   id        String   @id @default(cuid())
   name      String?
@@ -28,6 +40,7 @@ model User {
 
 model Genre {
   id          String   @id @default(cuid())
+  tmdbId      Int?     @unique
   name        String   @unique
   slug        String   @unique
   description String?
@@ -35,4 +48,54 @@ model Genre {
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  movies MovieGenre[]
+
+  @@index([isActive])
+}
+
+model Movie {
+  id               String      @id @default(cuid())
+  tmdbId           Int?        @unique
+  source           MovieSource @default(MANUAL)
+
+  title            String
+  originalTitle    String?
+  slug             String      @unique
+  description      String?
+
+  posterUrl        String?
+  backdropUrl      String?
+  trailerUrl       String?
+
+  duration         Int?
+  releaseDate      DateTime?
+  originalLanguage String?
+  voteAverage      Float?
+  voteCount        Int?
+  popularity       Float?
+
+  status           MovieStatus @default(DRAFT)
+  isActive         Boolean     @default(true)
+
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  genres           MovieGenre[]
+
+  @@index([status])
+  @@index([isActive])
+  @@index([source])
+  @@index([releaseDate])
+}
+
+model MovieGenre {
+  movieId String
+  genreId String
+
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  genre Genre @relation(fields: [genreId], references: [id], onDelete: Restrict)
+
+  @@id([movieId, genreId])
+  @@index([genreId])
 }

@@ -3,6 +3,13 @@ import "./globals.css";
 import { ToastProvider } from "@/providers/toast-provider";
 import { SessionProvider } from "@/providers/session-provider";
 import { QueryProvider } from "@/providers/query-provider";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
+});
 
 export const metadata: Metadata = {
     title: "Tech Cinema Booking",
@@ -16,7 +23,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="vi">
-            <body>
+            <body className={poppins.className}>
                 <SessionProvider>
                     <QueryProvider>
                         {children}
