@@ -32,28 +32,29 @@ enum SeatType {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String   @unique
-  password  String?
-  role      Role     @default(CUSTOMER)
-  image     String?
-  isActive  Boolean  @default(true)
+  id       String    @id @default(cuid())
+  name     String?
+  email    String    @unique
+  password String?
+  role     Role      @default(CUSTOMER)
+  image    String?
+  isActive Boolean   @default(true)
+  bookings Booking[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Genre {
-  id          String   @id @default(cuid())
-  tmdbId      Int?     @unique
-  name        String   @unique
-  slug        String   @unique
+  id          String  @id @default(cuid())
+  tmdbId      Int?    @unique
+  name        String  @unique
+  slug        String  @unique
   description String?
-  isActive    Boolean  @default(true)
+  isActive    Boolean @default(true)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   movies MovieGenre[]
 
@@ -61,18 +62,18 @@ model Genre {
 }
 
 model Movie {
-  id               String      @id @default(cuid())
-  tmdbId           Int?        @unique
-  source           MovieSource @default(MANUAL)
+  id     String      @id @default(cuid())
+  tmdbId Int?        @unique
+  source MovieSource @default(MANUAL)
 
-  title            String
-  originalTitle    String?
-  slug             String      @unique
-  description      String?
+  title         String
+  originalTitle String?
+  slug          String  @unique
+  description   String?
 
-  posterUrl        String?
-  backdropUrl      String?
-  trailerUrl       String?
+  posterUrl   String?
+  backdropUrl String?
+  trailerUrl  String?
 
   duration         Int?
   releaseDate      DateTime?
@@ -81,14 +82,14 @@ model Movie {
   voteCount        Int?
   popularity       Float?
 
-  status           MovieStatus @default(DRAFT)
-  isActive         Boolean     @default(true)
+  status   MovieStatus @default(DRAFT)
+  isActive Boolean     @default(true)
 
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  genres           MovieGenre[]
-  showtimes        Showtime[]
+  genres    MovieGenre[]
+  showtimes Showtime[]
 
   @@index([status])
   @@index([isActive])
@@ -108,19 +109,19 @@ model MovieGenre {
 }
 
 model Cinema {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   name        String
-  slug        String   @unique
+  slug        String  @unique
   address     String
   city        String
   phone       String?
   description String?
-  isActive    Boolean  @default(true)
+  isActive    Boolean @default(true)
 
-  rooms       Room[]
+  rooms Room[]
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([city])
   @@index([isActive])
@@ -134,13 +135,13 @@ enum RoomType {
 }
 
 model Room {
-  id        String   @id @default(cuid())
-  name      String
-  type      RoomType @default(STANDARD)
-  cinemaId  String
-  isActive  Boolean  @default(true)
+  id       String   @id @default(cuid())
+  name     String
+  type     RoomType @default(STANDARD)
+  cinemaId String
+  isActive Boolean  @default(true)
 
-  cinema    Cinema   @relation(fields: [cinemaId], references: [id], onDelete: Cascade)
+  cinema    Cinema     @relation(fields: [cinemaId], references: [id], onDelete: Cascade)
   seats     Seat[]
   showtimes Showtime[]
 
@@ -154,14 +155,15 @@ model Room {
 }
 
 model Seat {
-  id        String   @id @default(cuid())
-  roomId    String
-  row       String
-  number    Int
-  type      SeatType @default(NORMAL)
-  isActive  Boolean  @default(true)
+  id           String        @id @default(cuid())
+  roomId       String
+  row          String
+  number       Int
+  type         SeatType      @default(NORMAL)
+  isActive     Boolean       @default(true)
+  bookingSeats BookingSeat[]
 
-  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -179,23 +181,25 @@ enum ShowtimeStatus {
 }
 
 model Showtime {
-  id        String         @id @default(cuid())
+  id String @id @default(cuid())
 
-  movieId   String
-  roomId    String
+  movieId String
+  roomId  String
 
   startTime DateTime
   endTime   DateTime
   price     Int
 
-  status    ShowtimeStatus @default(SCHEDULED)
-  isActive  Boolean        @default(true)
+  status       ShowtimeStatus @default(SCHEDULED)
+  isActive     Boolean        @default(true)
+  bookings     Booking[]
+  bookingSeats BookingSeat[]
 
-  movie     Movie          @relation(fields: [movieId], references: [id], onDelete: Restrict)
-  room      Room           @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Restrict)
+  room  Room  @relation(fields: [roomId], references: [id], onDelete: Restrict)
 
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([movieId])
   @@index([roomId])
@@ -203,4 +207,96 @@ model Showtime {
   @@index([endTime])
   @@index([status])
   @@index([isActive])
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  EXPIRED
+}
+
+model Booking {
+  id String @id @default(cuid())
+
+  userId     String
+  showtimeId String
+
+  status      BookingStatus @default(PENDING)
+  totalAmount Int
+
+  user     User          @relation(fields: [userId], references: [id], onDelete: Restrict)
+  showtime Showtime      @relation(fields: [showtimeId], references: [id], onDelete: Restrict)
+  seats    BookingSeat[]
+  payments Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([showtimeId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model BookingSeat {
+  id String @id @default(cuid())
+
+  bookingId  String
+  showtimeId String
+  seatId     String
+
+  price Int
+
+  booking  Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  showtime Showtime @relation(fields: [showtimeId], references: [id], onDelete: Restrict)
+  seat     Seat     @relation(fields: [seatId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@unique([showtimeId, seatId])
+  @@index([bookingId])
+  @@index([showtimeId])
+  @@index([seatId])
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CASH
+  MOMO
+  VNPAY
+  BANK_TRANSFER
+  CREDIT_CARD
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+
+  bookingId     String
+
+  amount        Int
+  method        PaymentMethod
+  status        PaymentStatus @default(PENDING)
+
+  transactionId String?
+  provider      String?
+  paidAt        DateTime?
+
+  booking       Booking       @relation(fields: [bookingId], references: [id], onDelete: Restrict)
+
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([bookingId])
+  @@index([method])
+  @@index([status])
+  @@index([createdAt])
+  @@index([transactionId])
 }
