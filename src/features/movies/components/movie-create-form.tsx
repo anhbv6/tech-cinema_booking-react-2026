@@ -25,12 +25,16 @@ type Genre = {
   createdAt: string;
 };
 
+type MovieCreateFormProps = {
+  onCreated?: () => void;
+};
+
 async function getGenres() {
   const response = await api.get<{ data: Genre[] }>("/genres");
   return response.data.data;
 }
 
-export function MovieCreateForm() {
+export function MovieCreateForm({ onCreated }: MovieCreateFormProps) {
     const queryClient = useQueryClient();
 
     const { data: genres, isLoading: isLoadingGenres } = useQuery({
@@ -63,6 +67,7 @@ export function MovieCreateForm() {
         toast.success(data.message || "Movie created successfully");
         form.reset();
         queryClient.invalidateQueries({ queryKey: ["movies"] });
+        onCreated?.();
         },
         onError: (error: any) => {
         const message =
@@ -206,18 +211,18 @@ export function MovieCreateForm() {
                 </div>
             ) : (
                 <div className="grid max-h-52 gap-3 overflow-y-auto rounded-xl border border-zinc-100 bg-white p-4 sm:grid-cols-2 lg:grid-cols-3">
-                {genres?.map((genre) => (
-                    <label
-                    key={genre.id}
-                    className="flex cursor-pointer items-center gap-2 text-sm text-zinc-700"
-                    >
-                    <Checkbox
-                        checked={selectedGenreIds.includes(genre.id)}
-                        onCheckedChange={() => toggleGenre(genre.id)}
-                    />
-                    <span>{genre.name}</span>
-                    </label>
-                ))}
+                    {genres?.map((genre) => (
+                        <label
+                            key={genre.id}
+                            className="flex cursor-pointer items-center gap-2 text-sm text-zinc-700"
+                        >
+                            <Checkbox
+                                checked={selectedGenreIds.includes(genre.id)}
+                                onCheckedChange={() => toggleGenre(genre.id)}
+                            />
+                            <span>{genre.name}</span>
+                        </label>
+                    ))}
                 </div>
             )}
 

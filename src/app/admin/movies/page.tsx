@@ -1,5 +1,6 @@
-import { MovieCreateForm } from "@/features/movies/components/movie-create-form";
 import { MovieImportTmdbDialog } from "@/features/movies/components/movie-import-tmdb-dialog";
+import { MovieCreateDialog } from "@/features/movies/components/movie-create-dialog";
+import { MovieTable } from "@/features/movies/components/movie-table";
 
 export default function AdminMoviesPage() {
   return (
@@ -12,10 +13,13 @@ export default function AdminMoviesPage() {
           </p>
         </div>
 
-        <MovieImportTmdbDialog />
+        <div className="flex items-center gap-2">
+          <MovieImportTmdbDialog />
+          <MovieCreateDialog />
+        </div>
       </div>
 
-      <MovieCreateForm />
+      <MovieTable />
     </div>
   );
 }

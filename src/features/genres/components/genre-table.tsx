@@ -181,6 +181,8 @@ export function GenreTable() {
     const { data, isLoading, isError } = useQuery({
         queryKey: ["genres"],
         queryFn: getGenres,
+        // refetchOnMount: false,
+        // refetchOnWindowFocus: false,
     });
 
     const totalPages = data ? Math.ceil(data.length / ITEMS_PER_PAGE) : 1;

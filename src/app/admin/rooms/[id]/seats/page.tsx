@@ -1,9 +1,15 @@
-import React from 'react'
+import { SeatLayoutManager } from "@/features/seats/components/seat-layout-manager";
 
-const AdminRoomsSeatsPage = () => {
-  return (
-    <div>AdminRoomsSeatsPage</div>
-  )
+type AdminRoomSeatsPageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+export default async function AdminRoomSeatsPage({
+  params,
+}: AdminRoomSeatsPageProps) {
+  const { id } = await params;
+
+  return <SeatLayoutManager roomId={id} />;
 }
-
-export default AdminRoomsSeatsPage

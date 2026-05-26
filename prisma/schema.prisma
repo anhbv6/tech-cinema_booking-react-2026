@@ -25,6 +25,12 @@ enum MovieSource {
   TMDB
 }
 
+enum SeatType {
+  NORMAL
+  VIP
+  COUPLE
+}
+
 model User {
   id        String   @id @default(cuid())
   name      String?
@@ -82,6 +88,7 @@ model Movie {
   updatedAt        DateTime    @updatedAt
 
   genres           MovieGenre[]
+  showtimes        Showtime[]
 
   @@index([status])
   @@index([isActive])
@@ -98,4 +105,102 @@ model MovieGenre {
 
   @@id([movieId, genreId])
   @@index([genreId])
+}
+
+model Cinema {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  address     String
+  city        String
+  phone       String?
+  description String?
+  isActive    Boolean  @default(true)
+
+  rooms       Room[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([city])
+  @@index([isActive])
+}
+
+enum RoomType {
+  STANDARD
+  IMAX
+  FOUR_DX
+  VIP
+}
+
+model Room {
+  id        String   @id @default(cuid())
+  name      String
+  type      RoomType @default(STANDARD)
+  cinemaId  String
+  isActive  Boolean  @default(true)
+
+  cinema    Cinema   @relation(fields: [cinemaId], references: [id], onDelete: Cascade)
+  seats     Seat[]
+  showtimes Showtime[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cinemaId, name])
+  @@index([cinemaId])
+  @@index([type])
+  @@index([isActive])
+}
+
+model Seat {
+  id        String   @id @default(cuid())
+  roomId    String
+  row       String
+  number    Int
+  type      SeatType @default(NORMAL)
+  isActive  Boolean  @default(true)
+
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([roomId, row, number])
+  @@index([roomId])
+  @@index([type])
+  @@index([isActive])
+}
+
+enum ShowtimeStatus {
+  SCHEDULED
+  CANCELLED
+  FINISHED
+}
+
+model Showtime {
+  id        String         @id @default(cuid())
+
+  movieId   String
+  roomId    String
+
+  startTime DateTime
+  endTime   DateTime
+  price     Int
+
+  status    ShowtimeStatus @default(SCHEDULED)
+  isActive  Boolean        @default(true)
+
+  movie     Movie          @relation(fields: [movieId], references: [id], onDelete: Restrict)
+  room      Room           @relation(fields: [roomId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([movieId])
+  @@index([roomId])
+  @@index([startTime])
+  @@index([endTime])
+  @@index([status])
+  @@index([isActive])
 }
