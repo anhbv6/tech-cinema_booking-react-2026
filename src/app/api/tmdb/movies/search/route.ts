@@ -1,31 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 
-import { authOptions } from "@/lib/auth";
+import { requireAdmin } from "@/lib/security/server";
 import { searchTmdbMovies } from "@/features/tmdb/services/tmdb.service";
-
-const adminRoles = ["ADMIN", "MANAGER", "STAFF"];
-
-async function checkAdminPermission() {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user) {
-    return false;
-  }
-
-  return adminRoles.includes(session.user.role);
-}
 
 export async function GET(request: NextRequest) {
     try {
-        const isAllowed = await checkAdminPermission();
-
-        if (!isAllowed) {
-        return NextResponse.json(
-            { message: "Unauthorized" },
-            { status: 401 }
-        );
-        }
+        const auth = await requireAdmin(request);
+        if (!auth.ok) return auth.response;
 
         const searchParams = request.nextUrl.searchParams;
         const query = searchParams.get("query");

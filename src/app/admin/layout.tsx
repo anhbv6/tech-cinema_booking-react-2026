@@ -1,27 +1,13 @@
-import "./style.css";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
+"use client";
 
-const adminRoles = ["ADMIN", "MANAGER", "STAFF"];
+import "./style.css";
+import { AdminSidebar } from "@/components/admin/admin-sidebar";
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id) {
-    redirect("/admin/login?callbackUrl=/admin/dashboard");
-  }
-
-  if (!adminRoles.includes(String(session.user.role || ""))) {
-    redirect("/admin/login");
-  }
-
   return (
     <div className="min-h-screen bg-[#F6F6F3] p-4">
       <div className="flex min-h-[calc(100vh-2rem)] overflow-hidden rounded-[2rem]">

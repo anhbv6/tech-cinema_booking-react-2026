@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ToastProvider } from "@/providers/toast-provider";
-import { SessionProvider } from "@/providers/session-provider";
 import { QueryProvider } from "@/providers/query-provider";
 import { Poppins } from "next/font/google";
+import { AuthBootstrap } from "@/components/auth/auth-bootstrap";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -24,12 +24,11 @@ export default function RootLayout({
     return (
         <html lang="vi">
             <body className={poppins.className}>
-                <SessionProvider>
-                    <QueryProvider>
-                        {children}
-                        <ToastProvider />    
-                    </QueryProvider>
-                </SessionProvider>
+                <QueryProvider>
+                    <AuthBootstrap />
+                    {children}
+                    <ToastProvider />
+                </QueryProvider>
             </body>
         </html>
     );

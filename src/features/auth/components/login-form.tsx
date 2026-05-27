@@ -2,19 +2,29 @@
 
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 
+import { api } from "@/lib/axios";
 import { loginSchema } from "@/features/auth/schemas/auth.schema";
+import { useAuthStore } from "@/store/auth-store";
 import { SocialLogin } from "./social-login";
 
-export function LoginForm() {
+type LoginPortal = "client" | "admin";
+
+type LoginFormProps = {
+  portal?: LoginPortal;
+};
+
+export function LoginForm({ portal = "client" }: LoginFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const setCredentials = useAuthStore((state) => state.setCredentials);
 
   const rawCallback = searchParams.get("callbackUrl");
-  const callbackUrl = rawCallback && rawCallback.startsWith("/") ? rawCallback : "/";
+  const fallbackUrl = portal === "admin" ? "/admin/dashboard" : "/";
+  const callbackUrl =
+    rawCallback && rawCallback.startsWith("/") ? rawCallback : fallbackUrl;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,21 +48,28 @@ export function LoginForm() {
     try {
       setIsLoading(true);
 
-      const result = await signIn("credentials", {
+      const response = await api.post("/auth/login", {
         email: parsed.data.email,
         password: parsed.data.password,
-        redirect: false,
-        callbackUrl,
+        remember: Boolean(parsed.data.remember),
+        portal,
       });
 
-      if (result?.error) {
-        toast.error("Email or password is incorrect");
-        return;
-      }
+      const { accessToken, user } = response.data;
+      setCredentials({ accessToken, user });
 
       toast.success("Login successfully");
-      router.push(result?.url || callbackUrl);
+      router.push(callbackUrl || fallbackUrl);
       router.refresh();
+    } catch (error: unknown) {
+      const message =
+        error &&
+        typeof error === "object" &&
+        "response" in error &&
+        (error as { response?: { data?: { message?: string } } }).response?.data?.message
+          ? (error as { response?: { data?: { message?: string } } }).response!.data!.message!
+          : "Email or password is incorrect";
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
@@ -68,7 +85,7 @@ export function LoginForm() {
         </h1>
       </div>
 
-      <SocialLogin callbackUrl={callbackUrl} />
+      <SocialLogin />
 
       <div className="my-6 flex items-center gap-4">
         <div className="h-px flex-1 bg-zinc-100" />

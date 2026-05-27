@@ -1,16 +1,25 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-export function AdminLogoutButton() {
-  async function handleLogout() {
-    toast.success("Đã đăng xuất.");
+import { api } from "@/lib/axios";
+import { useAuthStore } from "@/store/auth-store";
 
-    await signOut({
-      callbackUrl: "/admin/login",
-    });
+export function AdminLogoutButton() {
+  const router = useRouter();
+  const clearAuth = useAuthStore((state) => state.clearAuth);
+
+  async function handleLogout() {
+    try {
+      await api.post("/auth/logout");
+    } finally {
+      clearAuth();
+      toast.success("�� dang xu?t.");
+      router.push("/login");
+      router.refresh();
+    }
   }
 
   return (

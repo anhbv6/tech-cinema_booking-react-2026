@@ -1,38 +1,19 @@
 // src/app/api/genres/[id]/route.ts
 
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 
 import { prisma } from "@/lib/prisma";
-import { authOptions } from "@/lib/auth";
+import { requireAdmin } from "@/lib/security/server";
 import { createGenreSchema } from "@/features/genres/schemas/genre.schema";
 import { slugify } from "@/lib/slug";
-
-const adminRoles = ["ADMIN", "MANAGER", "STAFF"];
-
-async function checkAdminPermission() {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user) {
-    return false;
-  }
-
-  return adminRoles.includes(session.user.role);
-}
 
 export async function DELETE(
   req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const isAllowed = await checkAdminPermission();
-
-    if (!isAllowed) {
-      return NextResponse.json(
-        { message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    const auth = await requireAdmin(req);
+    if (!auth.ok) return auth.response;
 
     const { id } = await context.params;
 
@@ -77,14 +58,8 @@ export async function PATCH(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const isAllowed = await checkAdminPermission();
-
-    if (!isAllowed) {
-      return NextResponse.json(
-        { message: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    const auth = await requireAdmin(request);
+    if (!auth.ok) return auth.response;
 
     const { id } = await context.params;
 

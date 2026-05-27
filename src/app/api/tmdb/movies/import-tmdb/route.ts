@@ -1,24 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 
 import { prisma } from "@/lib/prisma";
-import { authOptions } from "@/lib/auth";
+import { requireAdmin } from "@/lib/security/server";
 import { slugify } from "@/lib/slug";
 import { getTmdbMovieDetails } from "@/features/tmdb/services/tmdb.service";
 
-const adminRoles = ["ADMIN", "MANAGER", "STAFF"];
-
 const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p";
 
-async function checkAdminPermission() {
-    const session = await getServerSession(authOptions);
+type TmdbVideo = {
+    site?: string;
+    type?: string;
+    official?: boolean;
+    key?: string;
+};
 
-    if (!session?.user) {
-        return false;
-    }
+type TmdbVideosPayload = {
+    results?: TmdbVideo[];
+};
 
-    return adminRoles.includes(session.user.role);
-}
+type TmdbGenre = {
+    id: number;
+    name: string;
+};
 
 function getTmdbImageUrl(path?: string | null, size = "w500") {
     if (!path) return null;
@@ -26,18 +29,18 @@ function getTmdbImageUrl(path?: string | null, size = "w500") {
     return `${TMDB_IMAGE_BASE_URL}/${size}${path}`;
 }
 
-function getYoutubeTrailerUrl(videos: any) {
+function getYoutubeTrailerUrl(videos: TmdbVideosPayload | null | undefined) {
     const results = videos?.results || [];
 
     const trailer = results.find(
-        (video: any) =>
+        (video) =>
         video.site === "YouTube" &&
         video.type === "Trailer" &&
         video.official === true
     );
 
     const fallbackTrailer = results.find(
-        (video: any) => video.site === "YouTube" && video.type === "Trailer"
+        (video) => video.site === "YouTube" && video.type === "Trailer"
     );
 
     const selectedVideo = trailer || fallbackTrailer;
@@ -49,14 +52,8 @@ function getYoutubeTrailerUrl(videos: any) {
 
 export async function POST(request: NextRequest) {
     try {
-        const isAllowed = await checkAdminPermission();
-
-        if (!isAllowed) {
-        return NextResponse.json(
-            { message: "Unauthorized" },
-            { status: 401 }
-        );
-        }
+        const auth = await requireAdmin(request);
+        if (!auth.ok) return auth.response;
 
         const body = await request.json();
         const tmdbId = Number(body.tmdbId);
@@ -124,7 +121,7 @@ export async function POST(request: NextRequest) {
             status: "DRAFT",
             genres: {
             create: await Promise.all(
-                (tmdbMovie.genres || []).map(async (genre: any) => {
+                ((tmdbMovie.genres || []) as TmdbGenre[]).map(async (genre) => {
                 const genreName = genre.name;
                 const genreSlug = slugify(genreName);
 

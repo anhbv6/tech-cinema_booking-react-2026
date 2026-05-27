@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/security/server";
 
 const roles = ["ADMIN", "MANAGER", "STAFF", "CUSTOMER"];
 
@@ -12,6 +13,9 @@ type RouteContext = {
 
 export async function PATCH(request: NextRequest, context: RouteContext) {
   try {
+    const auth = await requireAdmin(request);
+    if (!auth.ok) return auth.response;
+
     const { id } = await context.params;
     const body = await request.json();
 

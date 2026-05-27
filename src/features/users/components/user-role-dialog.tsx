@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -52,17 +52,11 @@ export function UserRoleDialog({
 
   const [role, setRole] = useState<UserRole>("CUSTOMER");
 
-  useEffect(() => {
-    if (user) {
-      setRole(user.role);
-    }
-  }, [user]);
-
   const updateRoleMutation = useMutation({
     mutationFn: async () => {
       if (!user) return;
 
-      const response = await api.patch(`/users/${user.id}/role`, {
+      const response = await api.patch(`/users/${user.id}`, {
         role,
       });
 
@@ -74,9 +68,14 @@ export function UserRoleDialog({
       queryClient.invalidateQueries({ queryKey: ["users"] });
       onOpenChange(false);
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       const message =
-        error?.response?.data?.message || "Failed to update user role";
+        error &&
+        typeof error === "object" &&
+        "response" in error &&
+        (error as { response?: { data?: { message?: string } } }).response?.data?.message
+          ? (error as { response?: { data?: { message?: string } } }).response!.data!.message!
+          : "Failed to update user role";
       toast.error(message);
     },
   });
@@ -93,7 +92,15 @@ export function UserRoleDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        if (nextOpen && user) {
+          setRole(user.role);
+        }
+        onOpenChange(nextOpen);
+      }}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Change user role</DialogTitle>
