@@ -1,9 +1,7 @@
-"use client";
-
 import "./style.css";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 
-export default async function AdminLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
