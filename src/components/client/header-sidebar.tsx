@@ -1,57 +1,98 @@
 "use client";
 
-import { Bell, ChevronDown, Clock3, Compass, Download, History, Moon, Play, Search, Settings, Star } from 'lucide-react';
+import { clientNavItems } from '@/config/client-navigation';
+import { Bell, ChevronDown, Clock3, Compass, Download, History, LogOut, Moon, Play, Search, Settings, Star, User } from 'lucide-react';
+import Link from 'next/link';
 import React, { useState } from 'react'
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, NavigationMenuViewport } from '../ui/navigation-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { LogoutButton } from '@/components/auth/logout-button';
 
-const menuItems = [
-    { label: "Discovery", icon: Compass, active: true },
-    { label: "Top Rated", icon: Star },
-    { label: "Coming Soon", icon: Clock3 },
-]
-
-const libraryItems = [
-  { label: "Recent Played", icon: History },
-  { label: "Download", icon: Download },
-];
-
-function NavItem({ item }) {
-  const Icon = item.icon;
-
-  return (
-    <button
-      className={`group flex w-full items-center gap-3 rounded-xl px-1 py-3 text-left text-[13px] font-semibold transition ${
-        item.active ? "text-purple-500" : "text-slate-400 hover:text-slate-700"
-      }`}
-    >
-      <span
-        className={`grid h-5 w-5 place-items-center rounded-md transition ${
-          item.active ? "bg-purple-500 text-white shadow-sm" : "text-slate-300 group-hover:text-slate-500"
-        }`}
-      >
-        <Icon size={15} strokeWidth={2.3} />
-      </span>
-      <span>{item.label}</span>
-    </button>
-  );
-}
-
-function Header() {
+const HeaderSidebar = () => {
   return (
     <header className="flex h-16 flex-1 items-center justify-between border-b border-slate-100 bg-white px-12">
-      <nav className="flex h-full items-center gap-12 text-[14px] font-bold text-slate-800">
-        <a className="flex h-full items-center border-b-2 border-transparent px-1" href="#">Movies</a>
-        <a className="flex h-full items-center border-b-2 border-transparent px-1" href="#">Series</a>
-        <a className="flex h-full items-center border-b-2 border-transparent px-1" href="#">Animation</a>
-        <a className="flex h-full items-center border-b-2 border-transparent px-1" href="#">Genres</a>
-      </nav>
+      <div className='flex gap-2 items-center '>
+        <div className="w-12 h-8 bg-red-600 flex items-center justify-center">
+          <Star
+            fill="#facc15"
+            color="#facc15"
+            strokeWidth={1.5}
+            className="w-5 h-5"
+          />
+        </div>
+        {/* <h1 className="text-[17px] font-extrabold tracking-tight text-slate-900">Tea</h1> */}
+      </div>
+      <NavigationMenu>
+        <NavigationMenuList className="gap-8">
+          {clientNavItems.map((item: any) => {
+            const Icon = item?.icon;
+            const hasChildren = item.children?.length;
 
-      <div className="flex items-center gap-8">
+            if (hasChildren) {
+              return (
+                <NavigationMenuItem key={item.title}>
+                  <NavigationMenuTrigger className="bg-transparent">
+                    <div className="flex items-center gap-2">
+                      <span>{item.title}</span>
+                    </div>
+                  </NavigationMenuTrigger>
+
+                  <NavigationMenuContent>
+                    <div className="w-[200px]">
+                      <div className="space-y-1">
+                        {item.children?.map((child: any) => {
+                          const ChildIcon = child.icon;
+
+                          return (
+                            <NavigationMenuLink asChild key={child.href}>
+                              <Link
+                                href={child.href}
+                                className="flex items-center gap-3 rounded-xl p-3 transition hover:bg-slate-100"
+                              >
+                                {ChildIcon && (
+                                  <ChildIcon
+                                    size={18}
+                                    className="text-slate-500"
+                                  />
+                                )}
+
+                                <div>
+                                  <p className="font-semibold text-slate-800">
+                                    {child.name}
+                                  </p>
+                                </div>
+                              </Link>
+                            </NavigationMenuLink>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              );
+            }
+
+            return (
+              <NavigationMenuItem key={item.title}>
+                <Link
+                  href={item.href}
+                  className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-slate-100 hover:text-purple-600"
+                >
+                  <div className="flex items-center gap-2">
+                    {Icon && <Icon size={18} />}
+                    <span>{item.title}</span>
+                  </div>
+                </Link>
+              </NavigationMenuItem>
+            );
+          })}
+        </NavigationMenuList>
+        <NavigationMenuViewport />
+      </NavigationMenu>
+
+      <div className="flex items-center gap-4">
         <button className="grid h-10 w-10 place-items-center rounded-full text-slate-900 transition hover:bg-slate-50" aria-label="Search">
           <Search size={24} strokeWidth={2.2} />
-        </button>
-
-        <button className="rounded-full bg-purple-500 px-7 py-3 text-[14px] font-extrabold text-white shadow-[0_8px_18px_rgba(168,85,247,0.25)] transition hover:bg-purple-600">
-          Subscribe
         </button>
 
         <button className="relative grid h-10 w-10 place-items-center rounded-full text-slate-700 transition hover:bg-slate-50" aria-label="Notifications">
@@ -59,79 +100,76 @@ function Header() {
           <span className="absolute right-0.5 top-1 grid h-5 w-5 place-items-center rounded-full bg-rose-500 text-[10px] font-bold text-white ring-2 ring-white">3</span>
         </button>
 
-        <button className="flex items-center gap-3 rounded-full text-slate-600 transition hover:text-slate-900">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-[12px] font-bold text-slate-400 shadow-inner">U</span>
-          <ChevronDown size={17} strokeWidth={2.4} />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-2 rounded-full px-1 py-1 transition hover:bg-slate-100">
+              <span className="grid h-9 w-9 place-items-center rounded-full bg-slate-100 text-[12px] font-bold text-slate-500 shadow-inner">
+                U
+              </span>
+
+              <ChevronDown
+                size={17}
+                strokeWidth={2.4}
+                className="text-slate-500"
+              />
+            </button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent
+            align="end"
+            className="w-56 rounded-xl border border-slate-200 p-2"
+          >
+            {/* PROFILE */}
+            <DropdownMenuItem asChild>
+              <Link
+                href="/profile"
+                className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2"
+              >
+                <User size={18} className="text-slate-500" />
+
+                <div className="flex flex-col">
+                  <span className="font-medium">Profile</span>
+                  <span className="text-xs text-slate-500">
+                    Manage your account
+                  </span>
+                </div>
+              </Link>
+            </DropdownMenuItem>
+
+            {/* SETTINGS */}
+            <DropdownMenuItem asChild>
+              <Link
+                href="/settings"
+                className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2"
+              >
+                <Settings size={18} className="text-slate-500" />
+
+                <div className="flex flex-col">
+                  <span className="font-medium">Settings</span>
+                  <span className="text-xs text-slate-500">
+                    Preferences & privacy
+                  </span>
+                </div>
+              </Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            {/* LOGOUT */}
+            <DropdownMenuItem asChild>
+              <LogoutButton
+                redirectTo="/login"
+                className="flex w-full cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-red-500 outline-none"
+              >
+                <LogOut size={18} />
+                <span>Logout</span>
+              </LogoutButton>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
-  );
-}
-
-const HeaderSidebar = () => {
-    const [darkMode, setDarkMode] = useState(false);
-    return (
-        <div className="flex min-h-screen bg-white p-0">
-        <aside className="flex min-h-screen w-[225px] flex-col bg-[#fbfbfc] px-7 py-7 text-slate-500 shadow-[inset_-1px_0_0_rgba(15,23,42,0.03)]">
-            <div className="mb-12 flex items-center gap-2">
-            <div className="grid h-7 w-7 place-items-center rounded-full bg-purple-500 text-white shadow-sm">
-                <Play size={14} fill="currentColor" />
-            </div>
-            <h1 className="text-[17px] font-extrabold tracking-tight text-slate-900">CineMax</h1>
-            </div>
-
-            <nav className="space-y-10">
-            <section>
-                <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-300">Menu</p>
-                <div className="space-y-1">
-                {menuItems.map((item) => (
-                    <NavItem key={item.label} item={item} />
-                ))}
-                </div>
-            </section>
-
-            <section>
-                <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-300">Library</p>
-                <div className="space-y-1">
-                {libraryItems.map((item) => (
-                    <NavItem key={item.label} item={item} />
-                ))}
-                </div>
-            </section>
-            </nav>
-
-            <div className="mt-5 space-y-1">
-            <div className="flex w-full items-center justify-between rounded-xl px-1 py-3 text-[13px] font-semibold text-slate-400">
-                <div className="flex items-center gap-3">
-                <Moon size={17} className="text-slate-300" />
-                <span>Dark Mode</span>
-                </div>
-
-                <button
-                onClick={() => setDarkMode(!darkMode)}
-                className={`relative h-5 w-9 rounded-full transition ${darkMode ? "bg-purple-500" : "bg-slate-200"}`}
-                aria-label="Toggle dark mode"
-                >
-                <span
-                    className={`absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full bg-slate-400 shadow-sm transition ${
-                    darkMode ? "left-[18px] bg-white" : "left-0.5"
-                    }`}
-                />
-                </button>
-            </div>
-
-            <button className="group flex w-full items-center gap-3 rounded-xl px-1 py-3 text-left text-[13px] font-semibold text-slate-400 transition hover:text-slate-700">
-                <Settings size={17} className="text-slate-300 group-hover:text-slate-500" />
-                <span>Setting</span>
-            </button>
-            </div>
-        </aside>
-
-        <main className="min-h-screen flex-1 bg-white">
-            <Header />
-        </main>
-        </div>
-    )
+  )
 }
 
 export default HeaderSidebar

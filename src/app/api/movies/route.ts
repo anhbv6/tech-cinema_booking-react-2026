@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/security/server";
-import { slugify } from "@/lib/slug";
 import { createMovieSchema } from "@/features/movies/schemas/movie.schema";
+import { slugify } from "@/lib/utils";
 
 export async function GET(request: NextRequest) {
     const auth = await requireAdmin(request);

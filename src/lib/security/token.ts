@@ -15,6 +15,7 @@ export type TokenPayload = {
 
 function getSecret(key: "ACCESS_TOKEN_SECRET" | "REFRESH_TOKEN_SECRET") {
   const value = process.env[key] || process.env.NEXTAUTH_SECRET;
+  console.log("value", value);
 
   if (!value) {
     throw new Error(`${key} is not configured`);

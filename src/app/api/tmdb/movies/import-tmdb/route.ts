@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/security/server";
-import { slugify } from "@/lib/slug";
 import { getTmdbMovieDetails } from "@/features/tmdb/services/tmdb.service";
+import { slugify } from "@/lib/utils";
 
 const TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p";
 

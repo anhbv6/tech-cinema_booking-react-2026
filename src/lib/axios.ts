@@ -48,7 +48,10 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (originalRequest?.url?.includes("/auth/refresh") || originalRequest?.url?.includes("/auth/login")) {
+    if (
+      originalRequest?.url?.includes("/auth/refresh") ||
+      originalRequest?.url?.includes("/auth/login")
+    ) {
       useAuthStore.getState().clearAuth();
       return Promise.reject(error);
     }

@@ -10,19 +10,24 @@ import { loginSchema } from "@/features/auth/schemas/auth.schema";
 import { useAuthStore } from "@/store/auth-store";
 import { SocialLogin } from "./social-login";
 
-type LoginPortal = "client" | "admin";
-
 type LoginFormProps = {
-  portal?: LoginPortal;
+  portal?: "client" | "admin";
+  fallbackUrl: string;
+  forgotPasswordHref?: string | null;
+  showRegister?: boolean;
 };
 
-export function LoginForm({ portal = "client" }: LoginFormProps) {
+export function LoginForm({
+  portal = "client",
+  fallbackUrl,
+  forgotPasswordHref = "/forgot-password",
+  showRegister = true,
+}: LoginFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const setCredentials = useAuthStore((state) => state.setCredentials);
 
   const rawCallback = searchParams.get("callbackUrl");
-  const fallbackUrl = portal === "admin" ? "/admin/dashboard" : "/";
   const callbackUrl =
     rawCallback && rawCallback.startsWith("/") ? rawCallback : fallbackUrl;
 
@@ -141,12 +146,14 @@ export function LoginForm({ portal = "client" }: LoginFormProps) {
             Remember me
           </label>
 
-          <Link
-            href="/forgot-password"
-            className="text-[12px] font-medium text-[#b935f5] hover:underline"
-          >
-            Forgot Password
-          </Link>
+          {forgotPasswordHref ? (
+            <Link
+              href={forgotPasswordHref}
+              className="text-[12px] font-medium text-[#b935f5] hover:underline"
+            >
+              Forgot Password
+            </Link>
+          ) : null}
         </div>
 
         <button
@@ -158,12 +165,14 @@ export function LoginForm({ portal = "client" }: LoginFormProps) {
         </button>
       </form>
 
-      <p className="mt-6 text-center text-[12px] text-zinc-400">
-        Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-semibold text-[#b935f5]">
-          Register
-        </Link>
-      </p>
+      {showRegister ? (
+        <p className="mt-6 text-center text-[12px] text-zinc-400">
+          Don&apos;t have an account?{" "}
+          <Link href="/register" className="font-semibold text-[#b935f5]">
+            Register
+          </Link>
+        </p>
+      ) : null}
     </div>
   );
 }

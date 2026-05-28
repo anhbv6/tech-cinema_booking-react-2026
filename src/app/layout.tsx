@@ -26,7 +26,7 @@ export default function RootLayout({
             <body className={poppins.className}>
                 <QueryProvider>
                     <AuthBootstrap />
-                    {children}
+                        {children}
                     <ToastProvider />
                 </QueryProvider>
             </body>

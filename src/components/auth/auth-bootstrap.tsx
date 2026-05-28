@@ -2,10 +2,16 @@
 
 import { useEffect } from "react";
 import axios from "axios";
+import { usePathname } from "next/navigation";
 
 import { useAuthStore } from "@/store/auth-store";
 
+function isProtectedClientPath(pathname: string) {
+  return pathname === "/discovery" || pathname.startsWith("/discovery/") || pathname === "/about" || pathname.startsWith("/about/");
+}
+
 export function AuthBootstrap() {
+  const pathname = usePathname();
   const setCredentials = useAuthStore((state) => state.setCredentials);
   const clearAuth = useAuthStore((state) => state.clearAuth);
   const setInitialized = useAuthStore((state) => state.setInitialized);
@@ -30,6 +36,9 @@ export function AuthBootstrap() {
       } catch {
         if (!mounted) return;
         clearAuth();
+        if (typeof window !== "undefined" && isProtectedClientPath(pathname)) {
+          window.location.href = `/login?callbackUrl=${encodeURIComponent(pathname)}`;
+        }
       } finally {
         if (mounted) setInitialized(true);
       }
@@ -40,7 +49,7 @@ export function AuthBootstrap() {
     return () => {
       mounted = false;
     };
-  }, [clearAuth, setCredentials, setInitialized]);
+  }, [clearAuth, pathname, setCredentials, setInitialized]);
 
   return null;
 }

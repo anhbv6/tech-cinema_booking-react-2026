@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { slugify } from "@/lib/slug";
 import { cinemaSchema } from "@/features/cinemas/schemas/cinema.schema";
+import { slugify } from "@/lib/utils";
 
 type Params = {
   params: Promise<{
