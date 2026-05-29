@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { updateSeatSchema } from "@/features/seats/schemas/seat.schema";
+import { updateSeatSchema } from "@/features/admin/seats";
 
 type Params = {
   params: Promise<{
@@ -47,10 +47,10 @@ export async function PATCH(request: Request, { params }: Params) {
       message: "Seat updated successfully",
       data: seat,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
       {
-        message: error?.issues?.[0]?.message || "Failed to update seat",
+        message: (error as { issues?: Array<{ message?: string }> })?.issues?.[0]?.message || "Failed to update seat",
       },
       {
         status: 400,

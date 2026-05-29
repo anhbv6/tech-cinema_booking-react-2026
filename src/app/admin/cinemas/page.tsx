@@ -1,5 +1,5 @@
-import { CinemaCreateDialog } from "@/features/cinemas/components/cinema-create-dialog";
-import { CinemaTable } from "@/features/cinemas/components/cinema-table";
+import { CinemaCreateDialog } from "@/features/admin/cinemas";
+import { CinemaTable } from "@/features/admin/cinemas";
 
 export default function AdminCinemasPage() {
   return (

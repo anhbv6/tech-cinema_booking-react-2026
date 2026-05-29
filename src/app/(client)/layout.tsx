@@ -1,7 +1,6 @@
 "use client";
 
-import ClientSidebar from '@/components/client/client-sidebar'
-import HeaderSidebar from '@/components/client/header-sidebar'
+import { ClientSidebar, HeaderSidebar } from "@/features/client/navigation";
 import React from 'react'
 import './style.css'
 

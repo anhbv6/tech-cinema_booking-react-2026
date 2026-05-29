@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { updatePaymentStatusSchema } from "@/features/payments/schemas/payment.schema";
+import { updatePaymentStatusSchema } from "@/features/admin/payments";
 
 type RouteContext = {
   params: Promise<{
@@ -97,7 +97,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       message: "Payment status updated successfully",
       data: payment,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         message: "Failed to update payment status",

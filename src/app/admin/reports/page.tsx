@@ -1,4 +1,4 @@
-import { ReportDashboard } from "@/features/reports/components/report-dashboard";
+import { ReportDashboard } from "@/features/admin/reports";
 
 export default function AdminReportsPage() {
   return (

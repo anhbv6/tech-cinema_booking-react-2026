@@ -53,7 +53,7 @@ export async function PATCH(request: Request, context: RouteContext) {
       message: "Booking cancelled successfully",
       data: updatedBooking,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         message: "Failed to cancel booking",

@@ -1,17 +1,23 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { updateSeatSchema } from "@/features/seats/schemas/seat.schema";
-
-type Params = {
-  params: Promise<{
-    id: string;
-  }>;
-};
-
-export async function PATCH(request: Request, { params }: Params) {
+import { updateSeatSchema } from "@/features/admin/seats";
+export async function PATCH(request: Request) {
   try {
-    const { id } = await params;
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        {
+          message: "Seat id is required",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
     const body = await request.json();
     const values = updateSeatSchema.parse(body);
 
@@ -46,10 +52,10 @@ export async function PATCH(request: Request, { params }: Params) {
       message: "Seat updated successfully",
       data: seat,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
       {
-        message: error?.issues?.[0]?.message || "Failed to update seat",
+        message: (error as { issues?: Array<{ message?: string }> })?.issues?.[0]?.message || "Failed to update seat",
       },
       {
         status: 400,

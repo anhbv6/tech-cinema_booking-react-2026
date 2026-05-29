@@ -53,7 +53,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       message: "User role updated successfully",
       data: user,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         message: "Failed to update user role",

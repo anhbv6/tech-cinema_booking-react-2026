@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { loginSchema } from "@/features/auth/schemas/auth.schema";
+import { loginSchema } from "@/features/shared/auth";
 import { loginByPortal } from "@/lib/auth/login-service";
 
 export async function POST(request: NextRequest) {

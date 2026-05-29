@@ -424,7 +424,7 @@ export async function GET() {
         })),
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         message: "Failed to fetch dashboard data",

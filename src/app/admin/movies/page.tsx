@@ -1,6 +1,6 @@
-import { MovieImportTmdbDialog } from "@/features/movies/components/movie-import-tmdb-dialog";
-import { MovieCreateDialog } from "@/features/movies/components/movie-create-dialog";
-import { MovieTable } from "@/features/movies/components/movie-table";
+import { MovieImportTmdbDialog } from "@/features/admin/movies";
+import { MovieCreateDialog } from "@/features/admin/movies";
+import { MovieTable } from "@/features/admin/movies";
 
 export default function AdminMoviesPage() {
   return (

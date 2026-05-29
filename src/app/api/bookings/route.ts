@@ -76,7 +76,7 @@ export async function GET() {
     return NextResponse.json({
       data: bookings,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         message: "Failed to fetch bookings",

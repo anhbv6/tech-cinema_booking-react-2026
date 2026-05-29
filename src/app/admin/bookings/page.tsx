@@ -1,4 +1,4 @@
-import { BookingTable } from "@/features/bookings/components/booking-table";
+import { BookingTable } from "@/features/admin/bookings";
 
 export default function AdminBookingsPage() {
   return (

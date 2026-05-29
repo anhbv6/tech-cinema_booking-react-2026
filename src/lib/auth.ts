@@ -2,6 +2,7 @@ import type { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
+import type { Role } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 const adminRoles = ["ADMIN", "MANAGER", "STAFF"] as const;
@@ -10,7 +11,7 @@ export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
   pages: { signIn: "/login" },
   providers: (() => {
-    const providers = [
+    const providers: NextAuthOptions["providers"] = [
       Credentials({
       name: "Credentials",
       credentials: {
@@ -81,7 +82,7 @@ export const authOptions: NextAuthOptions = {
       });
 
       (user as { id?: string; role?: string }).id = saved.id;
-      (user as { id?: string; role?: string }).role = saved.role;
+      (user as { id?: string; role?: Role }).role = saved.role;
 
       return true;
     },
@@ -93,7 +94,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id as string;
-        token.role = (user as { role?: string }).role;
+        token.role = (user as { role?: Role }).role;
       }
 
       if (!token.role && token.email) {

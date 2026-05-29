@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { roomSchema } from "@/features/rooms/schemas/room.schema";
+import { roomSchema } from "@/features/admin/rooms";
 
 type Params = {
   params: Promise<{
@@ -96,10 +96,10 @@ export async function PATCH(request: Request, { params }: Params) {
       message: "Room updated successfully",
       data: room,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
       {
-        message: error?.issues?.[0]?.message || "Failed to update room",
+        message: (error as { issues?: Array<{ message?: string }> })?.issues?.[0]?.message || "Failed to update room",
       },
       {
         status: 400,

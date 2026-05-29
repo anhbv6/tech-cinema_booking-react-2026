@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { requireAdmin } from "@/lib/security/server";
-import { searchTmdbMovies } from "@/features/tmdb/services/tmdb.service";
+import { searchTmdbMovies } from "@/features/admin/tmdb";
 
 export async function GET(request: NextRequest) {
     try {

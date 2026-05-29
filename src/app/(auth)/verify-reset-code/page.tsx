@@ -1,5 +1,5 @@
-import { AuthLayout } from "@/features/auth/components/auth-layout";
-import { VerifyResetCodeForm } from "@/features/auth/components/verify-reset-code-form";
+import { AuthLayout } from "@/features/shared/auth";
+import { VerifyResetCodeForm } from "@/features/client/auth";
 
 export default function VerifyResetCodePage() {
   return (

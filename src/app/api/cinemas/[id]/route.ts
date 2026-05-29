@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { cinemaSchema } from "@/features/cinemas/schemas/cinema.schema";
+import { cinemaSchema } from "@/features/admin/cinemas";
 import { slugify } from "@/lib/utils";
 
 type Params = {
@@ -75,10 +75,10 @@ export async function PATCH(request: Request, { params }: Params) {
       message: "Cinema updated successfully",
       data: cinema,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
       {
-        message: error?.issues?.[0]?.message || "Failed to update cinema",
+        message: (error as { issues?: Array<{ message?: string }> })?.issues?.[0]?.message || "Failed to update cinema",
       },
       {
         status: 400,

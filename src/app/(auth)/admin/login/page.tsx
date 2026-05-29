@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { AdminLoginForm } from "@/features/auth/components/admin-login-form";
+import { AdminLoginForm } from "@/features/admin/auth";
 import { verifyRefreshToken } from "@/lib/security/token";
 
 const adminRoles = ["ADMIN", "MANAGER", "STAFF"] as const;

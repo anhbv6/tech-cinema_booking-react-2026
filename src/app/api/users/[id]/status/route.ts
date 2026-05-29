@@ -53,7 +53,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
         : "User deactivated successfully",
       data: user,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         message: "Failed to update user status",

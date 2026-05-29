@@ -1,9 +1,5 @@
-import React from 'react'
+import { AdminPromotionsPage } from "@/features/admin/promotions";
 
-const AdminPromotionsPage = () => {
-  return (
-    <div>AdminPromotionsPage</div>
-  )
+export default function Page() {
+  return <AdminPromotionsPage />;
 }
-
-export default AdminPromotionsPage

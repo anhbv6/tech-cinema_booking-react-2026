@@ -1,8 +1,8 @@
 // src/app/(auth)/login/page.tsx
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { AuthLayout } from "@/features/auth/components/auth-layout";
-import { LoginForm } from "@/features/auth/components/login-form";
+import { AuthLayout } from "@/features/shared/auth";
+import { LoginForm } from "@/features/client/auth";
 import { verifyRefreshToken } from "@/lib/security/token";
 
 export default async function LoginPage() {

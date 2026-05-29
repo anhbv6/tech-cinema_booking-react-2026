@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { createShowtimeSchema } from "@/features/showtimes/schemas/showtime.schema";
+import { createShowtimeSchema } from "@/features/admin/showtimes";
 
 function addMinutes(date: Date, minutes: number) {
   return new Date(date.getTime() + minutes * 60 * 1000);
@@ -280,10 +280,10 @@ export async function POST(request: Request) {
       message: "Showtime created successfully",
       data: showtime,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
       {
-        message: error?.issues?.[0]?.message || "Failed to create showtime",
+        message: (error as { issues?: Array<{ message?: string }> })?.issues?.[0]?.message || "Failed to create showtime",
       },
       {
         status: 400,

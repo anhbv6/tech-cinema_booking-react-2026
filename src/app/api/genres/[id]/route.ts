@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/security/server";
-import { createGenreSchema } from "@/features/genres/schemas/genre.schema";
+import { createGenreSchema } from "@/features/admin/genres";
 import { slugify } from "@/lib/utils";
 
 export async function DELETE(

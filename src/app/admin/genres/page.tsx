@@ -1,5 +1,5 @@
-import { GenreCreateForm } from "@/features/genres/components/genre-create-form";
-import { GenreTable } from "@/features/genres/components/genre-table";
+import { GenreCreateForm } from "@/features/admin/genres";
+import { GenreTable } from "@/features/admin/genres";
 
 export default function AdminGenresPage() {
   return (

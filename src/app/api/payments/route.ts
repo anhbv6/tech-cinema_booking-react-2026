@@ -57,7 +57,7 @@ export async function GET() {
     return NextResponse.json({
       data: payments,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         message: "Failed to fetch payments",

@@ -1,6 +1,6 @@
 // src/app/(auth)/register/page.tsx
-import { AuthLayout } from "@/features/auth/components/auth-layout";
-import { RegisterForm } from "@/features/auth/components/register-form";
+import { AuthLayout } from "@/features/shared/auth";
+import { RegisterForm } from "@/features/client/auth";
 
 export default function RegisterPage() {
   return (

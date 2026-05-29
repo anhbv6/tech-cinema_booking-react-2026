@@ -1,9 +1,5 @@
-import React from 'react'
+import { AdminSettingsPage } from "@/features/admin/settings";
 
-const AdminSettingsPage = () => {
-  return (
-    <div>AdminSettingsPage</div>
-  )
+export default function Page() {
+  return <AdminSettingsPage />;
 }
-
-export default AdminSettingsPage

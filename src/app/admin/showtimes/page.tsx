@@ -1,5 +1,5 @@
-import { ShowtimeCreateDialog } from "@/features/showtimes/components/showtime-create-dialog";
-import { ShowtimeTable } from "@/features/showtimes/components/showtime-table";
+import { ShowtimeCreateDialog } from "@/features/admin/showtimes";
+import { ShowtimeTable } from "@/features/admin/showtimes";
 
 export default function AdminShowtimesPage() {
   return (

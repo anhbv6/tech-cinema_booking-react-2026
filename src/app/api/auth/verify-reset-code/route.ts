@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { verifyResetCodeSchema } from "@/features/auth/schemas/auth.schema";
+import { verifyResetCodeSchema } from "@/features/shared/auth";
 
 export async function POST(request: NextRequest) {
   try {

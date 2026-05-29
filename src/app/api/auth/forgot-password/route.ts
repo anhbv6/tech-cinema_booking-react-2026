@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { forgotPasswordSchema } from "@/features/auth/schemas/auth.schema";
+import { forgotPasswordSchema } from "@/features/shared/auth";
 
 function generateCode() {
   return String(Math.floor(1000 + Math.random() * 9000));

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { createShowtimeSchema, showtimeSchema } from "@/features/showtimes/schemas/showtime.schema";
+import { updateShowtimeSchema } from "@/features/admin/showtimes";
 
 type Params = {
   params: Promise<{
@@ -58,7 +58,7 @@ export async function PATCH(request: Request, { params }: Params) {
   try {
     const { id } = await params;
     const body = await request.json();
-    const values = createShowtimeSchema.parse(body);
+    const values = updateShowtimeSchema.parse(body);
 
     const existingShowtime = await prisma.showtime.findUnique({
       where: {
@@ -206,10 +206,10 @@ export async function PATCH(request: Request, { params }: Params) {
       message: "Showtime updated successfully",
       data: showtime,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
       {
-        message: error?.issues?.[0]?.message || "Failed to update showtime",
+        message: (error as { issues?: Array<{ message?: string }> })?.issues?.[0]?.message || "Failed to update showtime",
       },
       {
         status: 400,

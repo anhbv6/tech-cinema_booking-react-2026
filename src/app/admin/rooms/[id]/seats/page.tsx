@@ -1,4 +1,4 @@
-import { SeatLayoutManager } from "@/features/seats/components/seat-layout-manager";
+import { SeatLayoutManager } from "@/features/admin/seats";
 
 type AdminRoomSeatsPageProps = {
   params: Promise<{

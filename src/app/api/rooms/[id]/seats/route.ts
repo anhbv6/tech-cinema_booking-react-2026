@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { generateSeatsSchema } from "@/features/seats/schemas/seat.schema";
+import { generateSeatsSchema } from "@/features/admin/seats";
 
 type Params = {
   params: Promise<{
@@ -121,10 +121,10 @@ export async function POST(request: Request, { params }: Params) {
     return NextResponse.json({
       message: "Seats generated successfully",
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
       {
-        message: error?.issues?.[0]?.message || "Failed to generate seats",
+        message: (error as { issues?: Array<{ message?: string }> })?.issues?.[0]?.message || "Failed to generate seats",
       },
       {
         status: 400,

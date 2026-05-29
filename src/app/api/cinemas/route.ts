@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { cinemaSchema } from "@/features/cinemas/schemas/cinema.schema";
+import { cinemaSchema } from "@/features/admin/cinemas";
 import { slugify } from "@/lib/utils";
 
 export async function GET() {
@@ -58,10 +58,10 @@ export async function POST(request: Request) {
         message: "Cinema created successfully",
         data: cinema,
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         return NextResponse.json(
         {
-            message: error?.issues?.[0]?.message || "Failed to create cinema",
+            message: (error as { issues?: Array<{ message?: string }> })?.issues?.[0]?.message || "Failed to create cinema",
         },
         {
             status: 400,

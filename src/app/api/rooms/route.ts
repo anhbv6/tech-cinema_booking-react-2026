@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { roomSchema } from "@/features/rooms/schemas/room.schema";
+import { roomSchema } from "@/features/admin/rooms";
 
 export async function GET() {
   try {
@@ -101,10 +101,10 @@ export async function POST(request: Request) {
       message: "Room created successfully",
       data: room,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
       {
-        message: error?.issues?.[0]?.message || "Failed to create room",
+        message: (error as { issues?: Array<{ message?: string }> })?.issues?.[0]?.message || "Failed to create room",
       },
       {
         status: 400,

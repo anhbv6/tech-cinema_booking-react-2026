@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { format } from "date-fns";
 
 import { prisma } from "@/lib/prisma";
-import { reportOverviewQuerySchema } from "@/features/reports/schemas/report.schema";
+import { reportOverviewQuerySchema } from "@/features/admin/reports";
 
 function getDefaultFromDate() {
   const date = new Date();
@@ -519,7 +519,7 @@ export async function GET(request: NextRequest) {
         recentPayments,
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         message: "Failed to fetch report overview",

@@ -1,5 +1,5 @@
-import { RoomCreateDialog } from "@/features/rooms/components/room-create-dialog";
-import { RoomTable } from "@/features/rooms/components/room-table";
+import { RoomCreateDialog } from "@/features/admin/rooms";
+import { RoomTable } from "@/features/admin/rooms";
 
 export default function AdminRoomsPage() {
   return (

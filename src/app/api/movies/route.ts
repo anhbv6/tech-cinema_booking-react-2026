@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/security/server";
-import { createMovieSchema } from "@/features/movies/schemas/movie.schema";
+import { createMovieSchema } from "@/features/admin/movies";
 import { slugify } from "@/lib/utils";
 
 export async function GET(request: NextRequest) {

@@ -1,4 +1,4 @@
-import { PaymentTable } from "@/features/payments/components/payment-table";
+import { PaymentTable } from "@/features/admin/payments";
 
 export default function AdminPaymentsPage() {
   return (
